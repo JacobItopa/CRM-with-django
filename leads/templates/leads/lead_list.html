@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CRM</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      .lead{
+        padding-top: 10px;
+        padding-top: 10px;
+        padding-left: 6px;
+        padding-right: 6px;
+        margin-top: 10px;
+        background-color: #f6f6f6;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <hr />
+    <a href="/leads/create">Create a new lead</a>
+	  <h1>Here is our Lead</h1>
+    {% for lead in leads %}
+    <div class="lead">
+      <a href="/leads/{{lead.pk}}/">{{lead.first_name}} {{lead.last_name}}</a>. Age:{{lead.age}}
+    </div>
+    {% endfor %}
+    </ul>
+  </body>
+</html>
