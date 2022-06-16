@@ -8,7 +8,8 @@ from .forms import LeadForm, LeadModelForm
 
 
 # Create your views here.
-
+def landing_page(request):
+    return render(request, 'landing.html')
 
 def lead_list(request):
     leads = Lead.objects.all()
@@ -27,7 +28,6 @@ def lead_detail(request, pk):
 def lead_create(request):
     form = LeadModelForm()
     if request.method == 'POST':
-        print('recieving a post request')
         form = LeadModelForm(request.POST)
         if form.is_valid():
             form.save()
