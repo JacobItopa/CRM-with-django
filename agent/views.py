@@ -1,4 +1,6 @@
+import random
 from audioop import reverse
+from http.client import HTTPResponse
 from urllib import request
 from django.shortcuts import render, reverse
 from django.views import generic
@@ -6,6 +8,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from leads.models import Agent
 from .forms import AgentModelForm
 from .mixins import OrganisorAndLoginRequiredMixins
+from django.core.mail import send_mail
+
+
 
 # Create your views here.
 
@@ -26,9 +31,21 @@ class AgentCreateView(OrganisorAndLoginRequiredMixins, generic.CreateView):
         return reverse("agent:agent-list")
 
     def form_valid(self, form):
-        agent = form.save(commit=False)
-        agent.organisation = self.request.user.userprofile
-        agent.save()
+        User = form.save(commit=False)
+        User.is_agent = True
+        User.is_organisor = False
+        User.set_password(random.randint(0, 1000000))
+        User.save()
+        Agent.objects.create(
+            user=User,
+            organisation=self.request.user.userprofile
+        )
+        send_mail(
+            subject='You are invited to be an agent',
+            message='You were added as an agent in CRM. Please Login to continue',
+            from_email='jacob@django.com',
+            recipient_list=[User.email]
+        )
         return super(AgentCreateView, self).form_valid(form)
 
 class AgentDetailView(OrganisorAndLoginRequiredMixins, generic.DeleteView):
