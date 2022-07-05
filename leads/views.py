@@ -4,7 +4,7 @@ from re import A
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
 from .models import Agent, Lead
-from .forms import LeadForm, LeadModelForm, CustomUserCreationForm
+from .forms import LeadForm, LeadModelForm, CustomUserCreationForm, AssignAgentForm
 from django.views import generic
 from django.core.mail import send_mail
 from django.contrib.auth.forms import UserCreationForm
@@ -104,6 +104,30 @@ class LeadDeleteView(OrganisorAndLoginRequiredMixins, generic.DeleteView):
         user = self.request.user
         queryset = Lead.objects.filter(organisation=user.userprofile)
         return queryset
+
+
+class AssignAgentview(OrganisorAndLoginRequiredMixins, generic.FormView):
+    template_name = "leads/assign_agent.html"
+    form_class = AssignAgentForm
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(AssignAgentview, self).get_form_kwargs(**kwargs)
+        kwargs.update({
+             "request":self.request
+        })
+        return kwargs
+
+    def get_success_url(self):
+        return reverse("leads:lead-list")
+
+    def form_valid(self, form):
+        agent = form.cleaned_data["agent"]
+        lead = Lead.objects.get(id=self.kwargs['pk'])
+        lead.agent = agent
+        lead.save()
+        return super(AssignAgentview, self).form_valid(form)
+
+
 
 
 
