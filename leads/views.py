@@ -6,7 +6,7 @@ from unicodedata import category
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
 from .models import Agent, Lead, Category
-from .forms import LeadForm, LeadModelForm, CustomUserCreationForm, AssignAgentForm
+from .forms import LeadForm, LeadModelForm, CustomUserCreationForm, AssignAgentForm, LeadCategoryUpdateForm
 from django.views import generic
 from django.core.mail import send_mail
 from django.contrib.auth.forms import UserCreationForm
@@ -174,6 +174,23 @@ class CategoryDetailView(LoginRequiredMixin, generic.DeleteView):
             queryset = Category.objects.filter(organisation=user.userprofile)
         else:
             queryset = Category.objects.filter(organisation=user.agent.organisation)
+        return queryset
+
+
+class LeadCategoryUpdateView(LoginRequiredMixin, generic.UpdateView):
+    template_name = "leads/lead_category_update.html"
+    form_class = LeadCategoryUpdateForm
+    
+    def get_success_url(self):
+        return reverse("leads:lead-detail", kwargs={"pk":self.get_object().id})
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_organisor:
+            queryset = Lead.objects.filter(organisation=user.userprofile)
+        else:
+            queryset = Lead.objects.filter(organisation=user.agent.organisation)
+            queryset=queryset.filter(agent__user=user)
         return queryset
 
 
