@@ -1,6 +1,6 @@
 from unicodedata import category
 from django.urls import path
-from .views import LeadListView, LeadDetailView, LeadCreateView, LeadUpdateView, LeadDeleteView, AssignAgentview, CategoryListView
+from .views import LeadListView, LeadDetailView, LeadCreateView, LeadUpdateView, LeadDeleteView, AssignAgentview, CategoryListView, CategoryDetailView
 
 app_name = "leads"
 
@@ -12,4 +12,5 @@ urlpatterns = [
     path('create/', LeadCreateView.as_view(), name='lead-create'),
     path('<int:pk>/assign-agent/', AssignAgentview.as_view(), name='assign-agent'),
     path('categories/', CategoryListView.as_view(), name='category-list'),
+    path('categories/<int:pk>/', CategoryDetailView.as_view(), name='category-detail'),
 ]

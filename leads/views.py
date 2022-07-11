@@ -154,7 +154,27 @@ class CategoryListView(LoginRequiredMixin, generic.ListView):
         return queryset
 
 
+class CategoryDetailView(LoginRequiredMixin, generic.DeleteView):
+    template_name = "leads/category_detail.html"
+    context_object_name = "context"
 
+    def get_context_data(self, **kwargs):
+        context = super(CategoryDetailView, self).get_context_data(**kwargs)
+        Lead.objects.filter(category = self.get_object())
+        leads = self.get_object().leads.all()
+
+        context.update({
+            "leads":leads
+        })
+        return context
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_organisor:
+            queryset = Category.objects.filter(organisation=user.userprofile)
+        else:
+            queryset = Category.objects.filter(organisation=user.agent.organisation)
+        return queryset
 
 
 
