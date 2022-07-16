@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'crm.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': "crm",
+        'USER':'postgres',
+        'PASSWORD':'root',
+        'HOST':'localhost',
+        'PORT':'5432',
     }
 }
 
@@ -134,5 +138,6 @@ AUTH_USER_MODEL = 'leads.User'
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 LOGIN_REDIRECT_URL = '/leads'
 LOGIN_URL = '/login'
+LOGOUT_REDIRECT_URL = "/"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = 'tailwind'
